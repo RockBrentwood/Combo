@@ -1,0 +1,28 @@
+Combo
+━━━━━
+This is the source to a free demo for a Lambda Calculus to combinator convertor and combinator reduction algorithm.
+The software in its present form dates from 1993 October 23,
+though it had been occasionally pursued as part of an on-going project in 1983-4 and 1987-8.
+
+It is released to the public domain free of any restrictions.
+You may use it for any purpose as you see fit.
+Both the extensional and non-extensional algorithms are incorporated.
+Revision 2 incorporates the η-rule, which defines extensionality.
+The description to follow is for the optimal combinator reduction process with extensionality.
+
+The architecture for the reduction process has been rigorously derived from an abstract machine called the SCD machine –
+which represents a normal order counterpart to the SECD-2 machine.
+
+The unique feature of this software is that its reduction algorithm is optimal:
+▪	no expression is ever stored more than once anywhere at any time during the entire history of a session,
+▪	no expression is ever reduced more than once,
+▪	no evaluation is ever done that does not need to be done.
+Nothing is ever forgotten, nothing ever thrown away, therefore there is no garbage collection.
+In place of garbage collection is the optimal sharing and reuse of expressions – a strategy I call Garbage Recycling.
+
+The evaluation strategy is called: Crazy Evaluation.
+
+It is also possible to extend this strategy to add in a loop checker in order to stop infinite cycles.
+This has been done, in this implementation.
+If one allows the dynamic creation of new combinator rules, one can go even further than even this.
+This is outlined in the adjoining documentation.
