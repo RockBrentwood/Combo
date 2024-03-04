@@ -1,0 +1,7 @@
+succ = \x y z.x y (y z),
+zero = K I,
+one = succ zero,
+two = succ one,
+   ("my numerals" zero one two)
+equal
+   ("Church numerals" (\f x.x) (\f x.f x) (\f x.f (f x)))

@@ -1,0 +1,5 @@
+monoid
+   (B (B a b) c)
+   (B a (B b c))
+   (B a I)
+   (B I a)

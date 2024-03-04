@@ -1,0 +1,9 @@
+z0 = K I,
+z1 = B (B F) F z0,
+z2 = B (B F) F z1,
+z3 = B (B F) F z2,
+all
+   (z0 u v w)
+   (z1 u v w)
+   (z2 u v w)
+   (z3 u v w)

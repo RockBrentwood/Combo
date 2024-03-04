@@ -1,0 +1,1 @@
+s = K, K = S K I, I = S, S = s, S (S K I) Cryptic

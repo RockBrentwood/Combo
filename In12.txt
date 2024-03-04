@@ -1,0 +1,1 @@
+x = (x = S x, (T = S, S = K, K = T, K S x (x = x x, S x))), K x

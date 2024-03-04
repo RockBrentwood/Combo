@@ -1,0 +1,3 @@
+all
+   (I x) (K x y) (D x) (T x y) (W x y)
+   (U x y) (B x y z) (C x y z) (S x y z) (F x y z)

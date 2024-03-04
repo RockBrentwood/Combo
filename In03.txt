@@ -1,0 +1,3 @@
+Pair = B C T, Left = T K, Right = T (K I),
+ab = Pair a b,
+pair (Left ab) (Right ab)

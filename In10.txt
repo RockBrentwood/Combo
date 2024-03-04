@@ -1,0 +1,1 @@
+x = K, x = S x, y = x S, S = S S, x S y

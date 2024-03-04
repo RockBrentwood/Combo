@@ -1,0 +1,4 @@
+F = \x y z.x y (y z),
+n0 = K I, n1 = F n0, n2 = F n1, n3 = F n2,
+t = \u.(u (B (B F) F) (K (K I)) a b c),
+t n3

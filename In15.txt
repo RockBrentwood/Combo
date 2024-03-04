@@ -1,0 +1,9 @@
+succ = \x y z.x y (y z),
+zero = K I,
+one = succ zero,
+valid equations
+   (eq1 one equals I)
+   (eq2 (B f (B g h)) equals (B (B f g) h))
+   (eq3 (B I a) equals a)
+   (eq4 (B a I) equals a)
+   (eq5 (S K x) equals I)
