@@ -26,3 +26,5 @@ It is also possible to extend this strategy to add in a loop checker in order to
 This has been done, in this implementation.
 If one allows the dynamic creation of new combinator rules, one can go even further than even this.
 This is outlined in the adjoining documentation.
+
+The extension of Combo to rational infinite lambda terms is discussed in the adjoining file ToDo.txt.

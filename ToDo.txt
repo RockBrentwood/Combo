@@ -1,0 +1,63 @@
+A generalization of the syntax, lambda abstraction, and reduction rules to rational infinite lambda terms.
+
+The current syntax
+	Λ ⇒ x | ( Λ ) | Λ Λ | λx·Λ | x = Λ, Λ
+	Λ = lambda term, x = variable / sub-term label
+can be expanded to either
+	Λ ⇒ x | ( Λ ) | Λ Λ | λx·Λ | x = Λ, Λ | y : Λ, Λ | y : Λ | goto y
+	Λ = lambda term, x = variable / sub-term label, y = goto label
+or to just
+	Λ ⇒ x | ( Λ ) | Λ Λ | λx·Λ | x = Λ, Λ | x : Λ, Λ | x : Λ
+	Λ = lambda term, x = variable / sub-term label / goto label
+with the optimization
+	x : Λ, x	⇔	x : Λ
+
+The scoping rules for labels, however, needs to be clarified.
+
+The determination of which variables are free in which terms is required for the abstraction algorithm.
+Denoting the set of free variables of a term T by ∂T, it is currently given by
+	∂x = { x },
+	∂(A) = ∂A
+	∂AB = ∂A ∪ ∂B
+	∂λx·A = ∂A - { x }
+	∂x=A,B = ∂A ∪ (∂B - { x })
+For goto labels, however, we require:
+	∂y = ∂A, if the label y : A occurs in an expression
+This leads to a fixed-point recursive system for ∂(⋯), taken over the subterms of a given infinitary term.
+The solution is then defined as its least fixed-point.
+
+Example: (From Figure 5 in [1])
+	A = λφ·λx·(φ (φ x)), X: λφ·(f (φ a) (X (A φ))), X (A g)
+
+	∂A = ∂(φ (φ x)) - { x, φ } = { x, φ } - { x, φ } = ∅
+	∂X = ∂(f (φ a) (X (A φ))) - { φ } = ({ a, f, φ } ∪ ∂A ∪ ∂X) - { φ } = { a, f } ∪ (∂X - { φ })
+
+The least fixed point solution to
+	∂X = { a, f } ∪ (∂X - { φ })
+is
+	∂X = { a, f }.
+Thus,
+	∂X (A g) = ∂X ∪ ∂A ∪ { g } = { a, f, g }
+
+This is a nascent form of live variable analysis for control-flow structures, which is better seen by explicitly writing the goto label as such:
+	A = λφ·λx·(φ (φ x)), X: λφ·(f (φ a) (goto X (A φ))), goto X (A g)
+or even optimizing it as
+	A = λφ·λx·(φ (φ x)), (X: λφ·(f (φ a) (goto X (A φ)))) (A g)
+
+Once the free variable set is determined, then lambda abstraction can proceed forth, as usual:
+	A = λφ·λx·(φ (φ x)) = λφ·(B φ (λx·φ x)) = λφ·(B φ φ) = W (λφ·B φ) = W B
+	λφ·(f (φ a) (X (A φ))) = S (λφ·f (φ a)) (λφ·X (A φ)) = S (B f (λφ·φ a)) (B X (λφ·A φ)) = S (B f (T a)) (B X A)
+the result being the expression
+	A = W B, X: S (B f (T a)) (B X A), X (A g)
+or just
+	A = W B, (X: S (B f (T a)) (B X A)) (A g)
+
+With the goto made explicit, it becomes:
+	A = W B, X: S (B f (T a)) (B goto X A), goto X (A g)
+or just
+	A = W B, (X: S (B f (T a)) (B goto X A)) (A g)
+
+Reference:
+[1]	Klaus Aehlig, "A Finite Semantics Of Simply-Typed Lambda Terms For Infinite Runs Of Automata",
+	Logical Methods in Computer Science, Vol. 3 (3:1) 2007, pp. 1–23
+	Preprint: https://arxiv.org/abs/0706.2076
