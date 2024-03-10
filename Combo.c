@@ -3,8 +3,9 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-int ShowSteps = 0, Extensional = 0, Statistics = 0; // Show steps, use extensionality, show statistics.
+bool ShowSteps = false, Extensional = false, Statistics = false; // Show steps, use extensionality, show statistics.
 
 // Input format derived from the following syntax
 // E = "(" E ")" | E E | X | "\" X+ ["."] E | X "=" E "," E.
@@ -77,7 +78,7 @@ Symbol LookUp(char *S) {
 }
 
 // Used if Extensional is enabled.
-Symbol Var(int New) {
+Symbol Var(bool New) {
    static char Name[12] = "#";
    static int Level = 0;
    sprintf(Name + 1, "%d", New? Level++: --Level);
@@ -118,7 +119,7 @@ char Scan(void) {
 
 typedef Exp (*Task)(Exp E);
 struct Exp {
-   byte Leaf, Normal, State;
+   bool Leaf, Normal; byte State;
    int Arity, Hash; Exp Link, Ref, Next; Task Combo;
    union {
       Symbol X;
@@ -211,8 +212,8 @@ Exp MakeSym(Symbol Sym) {
       if (Sym == HP->Body.X) return HP;
    Exp E = (Exp)Allocate(sizeof *E);
    E->Body.X = Sym; E->Combo = NULL, E->Arity = INFINITY;
-   E->Normal = 1, E->Link = E, E->State = 0;
-   E->Ref = NULL, E->Hash = H; E->Leaf = 1;
+   E->Normal = true, E->Link = E, E->State = 0;
+   E->Ref = NULL, E->Hash = H; E->Leaf = true;
    E->Next = ExpHash[H], ExpHash[H] = E;
    return E;
 }
@@ -222,8 +223,8 @@ Exp Combinator(char *Name, Task Combo, int Arity) {
    Exp E = (Exp)Allocate(sizeof *E);
    E->Body.X = LookUp(Name); E->Body.X->E = E;
    E->Combo = Combo, E->Arity = Arity,
-   E->Normal = 1, E->Link = E, E->State = 0;
-   E->Ref = NULL, E->Hash = Label++; E->Leaf = 1;
+   E->Normal = true, E->Link = E, E->State = 0;
+   E->Ref = NULL, E->Hash = Label++; E->Leaf = true;
    return E;
 }
 
@@ -248,7 +249,7 @@ Exp Apply(Exp Head, Exp Tail) {
    E->Normal = (!Extensional || Head->Arity == INFINITY || Tail->Arity == INFINITY) && E->Arity != 0 && Head->Normal && Tail->Normal;
    E->Link = E->Arity > 0? E: NULL;
    E->State = 0;
-   E->Ref = NULL, E->Hash = H; E->Leaf = 0;
+   E->Ref = NULL, E->Hash = H; E->Leaf = false;
    E->Next = ExpHash[H], ExpHash[H] = E;
    return E;
 }
@@ -354,14 +355,14 @@ Exp Abstract(Exp E, Symbol X) { /* Calculate [E] = \x.E */
                   B == NULL? Apply(xW, A): // [ax] = W [a]
                   B == P? Apply(Apply(xC, A), B): // [aB] = C [a] B
                      Apply(Apply(xS, A), B); // [ab] = S [a][b]
-            if (Extensional && E->Normal) E->Ref->Normal = 1, E->Ref->Link = E->Ref;
+            if (Extensional && E->Normal) E->Ref->Normal = true, E->Ref->Link = E->Ref;
          break;
       }
    }
    if (P == NULL) return NULL;
 // P->Ref == NULL if P == x, P if [P] == K P, [P] otherwise.
    A = P->Ref == NULL? xI: P->Ref == P? Apply(xK, P): P->Ref;
-   if (Extensional && P->Normal) A->Normal = 1, A->Link = A;
+   if (Extensional && P->Normal) A->Normal = true, A->Link = A;
    for (E = P, P = NULL; E != NULL; DOWN(P, E, N)) { /* Clear out the Refs */
       if (E->Leaf) { E->Ref = NULL, FLIP(P, E, N); continue; }
       if (E->Ref == NULL) { FLIP(P, E, N); continue; }
@@ -398,13 +399,13 @@ Start:
       else if (!Extensional) {
          C->State = 4, C->Link = D, D = C, C = !C->Body.App.Head->Normal? C->Body.App.Head: C->Body.App.Tail; goto Start;
       } else if (C->Arity < INFINITY) {
-         C->State = 5, C->Link = D, D = C, C = Apply(C, MakeSym(Var(1))); goto Start;
+         C->State = 5, C->Link = D, D = C, C = Apply(C, MakeSym(Var(true))); goto Start;
       } else if (!C->Body.App.Head->Normal) {
          C->State = 4, C->Link = D, D = C, C = C->Body.App.Head; goto Start;
       } else if (!C->Body.App.Tail->Normal) {
          C->State = 4, C->Link = D, D = C, C = C->Body.App.Tail; goto Start;
       } else {
-         C->Normal = 1, C->Link = C; goto Normal;
+         C->Normal = true, C->Link = C; goto Normal;
       }
    } else {
       C->State = S + 2, C->Link = D, D = C, S = 1, C = C->Body.App.Head; goto Start;
@@ -421,7 +422,7 @@ Normal:
       goto Start;
    } else if (Extensional) {
       E = D->Link, D->State = 0;
-      C = Abstract(C, Var(0));
+      C = Abstract(C, Var(false));
       D->Link = C, D = E; goto Normal;
    }
 Return:
@@ -511,17 +512,17 @@ void Usage(char *App) {
 int main(int AC, char *AV[]) {
    char *App = AC <= 0? NULL: AV[0]; if (App == NULL || *App == '\0') App = "Combo";
    int Status = 1;
-   int DoU = 0;
+   bool DoU = false;
    for (int A = 1; A < AC; ) {
       char *Arg = AV[A++];
       if (Arg[0] != '-') goto InvalidOption;
       char F = Arg[1];
       switch (F) {
-         case 's': ShowSteps = 1; break;
-         case 'e': Extensional = 1; break;
-         case 'x': Statistics = 1; break;
+         case 's': ShowSteps = true; break;
+         case 'e': Extensional = true; break;
+         case 'x': Statistics = true; break;
          case '?': case 'h':
-            if (!DoU) Usage(App), DoU = 1;
+            if (!DoU) Usage(App), DoU = true;
          break;
          default: InvalidOption: fprintf(stderr, "Unrecognized option: \"%s\".\n", Arg), Usage(App); goto Exit;
       }
