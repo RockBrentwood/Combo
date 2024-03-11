@@ -5,7 +5,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-bool ShowSteps = false, Extensional = false, Statistics = false; // Show steps, use extensionality, show statistics.
+bool ShowSteps = false; // Show steps.
+bool Extensional = false// Use extensionality.
+bool Statistics = false; // Show statistics.
+bool CompileOnly = false; // Translate without reducing.
 
 // Input format derived from the following syntax
 // E = "(" E ")" | E E | X | "\" X+ ["."] E | X "=" E "," E.
@@ -380,7 +383,7 @@ void Evaluate(Exp C) {
       Ns = Is = Ks = Ds = Ts = Ws = Us = Bs = Cs = Ss = 0;
    }
    Exp D = NULL; int S = 2;
-   if (C == NULL) goto Return;
+   if (C == NULL || CompileOnly) goto Return;
    Exp E;
 Start:
    if (C->State > 0) printf("Cyclic term: "), WriteExp(C), putchar('\n'), exit(1);
@@ -505,8 +508,12 @@ int Annihilate(char L) {
 }
 
 void Usage(char *App) {
-   fprintf(stderr, "Usage: %s [-s][-e][-x][-?][-h]\n", App);
-   fprintf(stderr, "-s: Show steps, -e: Use the eta rule (extensionality), -x: Show statistics, -?/-h Print this message.\n");
+   fprintf(stderr, "Usage: %s [-s][-e][-x][-c][-?][-h]\n", App);
+   fprintf(stderr, "-s: Show steps.\n");
+   fprintf(stderr, "-e: Use the eta rule (extensionality).\n");
+   fprintf(stderr, "-x: Show statistics.\n");
+   fprintf(stderr, "-c: Compile only.\n");
+   fprintf(stderr, "-?/-h Print this message.\n");
 }
 
 int main(int AC, char *AV[]) {
@@ -521,6 +528,7 @@ int main(int AC, char *AV[]) {
          case 's': ShowSteps = true; break;
          case 'e': Extensional = true; break;
          case 'x': Statistics = true; break;
+         case 'c': CompileOnly = true; break;
          case '?': case 'h':
             if (!DoU) Usage(App), DoU = true;
          break;
