@@ -57,7 +57,28 @@ With the goto made explicit, it becomes:
 or just
 	A = W B, (X: S (B f (T a)) (B goto X A)) (A g)
 
-Reference:
+A distinction between strongly convergent reduction - where the each individual node of the limiting infinitary expression converges in a finite number of steps, verses more general infinitary reductions may be drawn.[2] Included in the latter are
+▪	D = λx·x x, D D, where D D → D D
+
+▪	(Based on the "M" term in section 5 of [2])
+	M = N I, N: λx·N (x I),
+	which may be represented as f (f (f (⋯))) I, where f = C B (T I), i.e.
+		Y = \f.(\x.f (x x)) (\x.f (x x)), f = C B (T I), Y f I.
+		i.e. as V = C B D, f = C B (T I), M = S V V f I
+	The λ-expression reduces as N I → N (I I) → N (I I I) → ⋯
+	while the combinator expression reduces as
+		Y f I	→ S V V f I
+			→ V f (V f) I
+			→⁵ V f (V f) (T I I)
+			→⁵ V f (V f) (T I (T I I))
+			→⁵ V f (V f) (T I (T I (T I I)))
+			⋯
+
+A formalism for infinitary λ-calculus and infinitary reductions, which arose independently at the same time Combo, and the related writeups on the Infinitary λ-calculus put out on the USENET, arose may be found in [3]. The USENET articles may be added to this archive later, after they are found and re-typeset.
+
+References:
 [1]	Klaus Aehlig, "A Finite Semantics Of Simply-Typed Lambda Terms For Infinite Runs Of Automata",
 	Logical Methods in Computer Science, Vol. 3 (3:1) 2007, pp. 1–23
 	Preprint: https://arxiv.org/abs/0706.2076
+[2]	Jörg Endrullis and Andrew Polonsky, "Infinitary Rewriting Coinductively"
+[3]	J. R. Kennaway, J. W. Klop, M. R. Sleep, F. J. de Vries, "Infinitary Lambda Calculus", Theoretical Computer Science 175 (1997), 93-125.

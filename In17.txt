@@ -1,0 +1,1 @@
+V = \x.f (x x), Y = \f.V V, f = C B (T I), Y f I
