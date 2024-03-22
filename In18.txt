@@ -1,0 +1,19 @@
+A1a = K,
+A1b = S (S (K S) (S (K K) K)) (K (S K K)),
+A2a = S,
+A2b = S (S (K S) (S (K (S (K S))) (S (K (S (K K))) S))) (K (K (S K K))),
+A3a = S (S (K S) (S (K K) (S (K S) K))) (K K),
+A3b = S (K K),
+A4a = S (K S) (S (K K)),
+A4b = S (K K) (S (S (K S) (S (K K) (S K K))) (K (S K K))),
+A5a = S (K (S (K S))) (S (K S) (S (K S))),
+A5b = S (S (K S) (S (K K) (S (K S) (S (K (S (K S))) S)))) (K S),
+A6a = S (S (K S) K) (K (S K K)),
+A6b = S K K,
+CL
+   (Axiom1 A1a A1b) 
+   (Axiom2 A2a A2b) 
+   (Axiom3 A3a A3b) 
+   (Axiom4 A4a A4b) 
+   (Axiom5 A5a A5b) 
+   (Axiom6 A6a A6b) 

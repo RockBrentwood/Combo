@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 bool ShowSteps = false; // Show steps.
-bool Extensional = false// Use extensionality.
+bool Extensional = false; // Use extensionality.
 bool Statistics = false; // Show statistics.
 bool CompileOnly = false; // Translate without reducing.
 
